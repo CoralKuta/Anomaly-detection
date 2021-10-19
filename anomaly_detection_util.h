@@ -3,7 +3,7 @@
 #define ANOMALYDETECTORUTIL_H_
 
 // return the average of the values that in the array
-float avg(const float* x, int size);
+float avg(float* x, int size);
 
 // returns the variance of X
 float var(float* x, int size);

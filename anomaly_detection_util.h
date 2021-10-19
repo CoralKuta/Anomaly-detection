@@ -2,10 +2,10 @@
 #ifndef ANOMALYDETECTORUTIL_H_
 #define ANOMALYDETECTORUTIL_H_
 
-
+// return the average of the values that in the array
 float avg(float* x, int size);
 
-// returns the variance of X and Y
+// returns the variance of X
 float var(float* x, int size);
 
 // returns the covariance of X and Y
@@ -20,6 +20,8 @@ public:
 	float a,b;
 	Line():a(0),b(0){}
 	Line(float a, float b):a(a),b(b){}
+
+    // return f(x) from the liner equation of the line
 	float f(float x){
 		return a*x+b;
 	}
@@ -28,6 +30,7 @@ public:
 class Point{
 public:
 	float x,y;
+
 	Point(float x, float y):x(x),y(y){}
 };
 

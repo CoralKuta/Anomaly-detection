@@ -11,7 +11,7 @@ float* get_X_from_points(Point** points, int size);
 float* get_Y_from_points(Point** points, int size);
 
 // return the average of the values that in the array
-float avg(const float* x, int size){
+float avg(float* x, int size){
     // size is 0 or less. return 0.
     if (size < 1) {
         return 0;

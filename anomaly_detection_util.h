@@ -16,8 +16,8 @@ float cov(float* x,  float* y, int size);
 float pearson(float* x, float* y, int size);
 
 class Line{
-	float a,b;
 public:
+	float a,b;
 	Line():a(0),b(0){}
 	Line(float a, float b):a(a),b(b){}
 
@@ -28,8 +28,9 @@ public:
 };
 
 class Point{
-	float x,y;
 public:
+	float x,y;
+
 	Point(float x, float y):x(x),y(y){}
 
     //return the x field

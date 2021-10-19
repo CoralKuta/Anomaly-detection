@@ -5,7 +5,7 @@
 
 float avg(float* x, int size);
 
-// returns the variance of X and Y
+// returns the variance of X
 float var(float* x, int size);
 
 // returns the covariance of X and Y

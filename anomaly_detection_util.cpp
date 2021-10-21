@@ -23,66 +23,44 @@ float avg(float* x, int size){
 
 // returns the variance of X
 float var(float* x, int size){
-    float sum = 0;
+    float squared_sum = 0;
 
-    // summing the squared values of the x array
+    // summing the squared values that in the x array
     for (int i = 0; i < size; i++) {
-        sum += (x[i] * x[i]);
+        squared_sum += (x[i] * x[i]);
     }
-    sum = sum / (float) size;
 
     //calculate the average of the original x array
     float average = avg(x, size);
-    return sum - (average * average);
-}
 
+    //return the variance according to the equation
+    return  (((squared_sum / (float) size)) - (average * average));
+}
 
 // returns the covariance of X and Y
 float cov(float* x, float* y, int size){
-    // calculating the average of x and y
-    float average_x = avg(x, size);
-    float average_y = avg(y, size);
+    float sum_multiplied_xy = 0;
 
-    // creating new arrays to store the values minus their average
-    float *x_minus = new float [size];
-    float *y_minus = new float [size];
-
+    // summing the multiplied of x and y values that in the arrays
     for (int i = 0; i < size; i++) {
-        x_minus[i] = (x[i] - average_x);
-        y_minus[i] = (y[i] - average_y);
+        sum_multiplied_xy += (x[i] * y[i]);
     }
 
-    float *multiplied = new float [size];
-
-    for (int i = 0; i < size; i++) {
-        multiplied[i] = (x_minus[i] * y_minus[i]);
-    }
-
-    float average = avg(multiplied, size);
-
-    // delete the arrays
-    delete[] x_minus;
-    delete[] y_minus;
-    delete[] multiplied;
-
-    return average;
+    //return the covariance according to the equation
+    return ((sum_multiplied_xy / (float) size) - (avg(x, size) * avg(y, size)));
 }
-
 
 // returns the Pearson correlation coefficient of X and Y
 float pearson(float* x, float* y, int size) {
-    // calculate the square root of the variance.
-    float standard_deviation_x = sqrtf(var(x, size));
-    float standard_deviation_y = sqrtf(var(y, size));
-
-	return (cov(x, y, size)) / (standard_deviation_x * standard_deviation_y);
+    // calculate the pearson according to the equation
+	return (cov(x, y, size)) / (sqrtf(var(x, size)) * sqrtf(var(y, size)));
 }
 
 // performs a linear regression and returns the line equation
 Line linear_reg(Point** points, int size){
     float a, b;
 
-    // initial arrays of x and y values, of the points
+    // initial arrays of x and y values of the points
     float *x = new float [size];
     float *y = new float [size];
 
@@ -93,12 +71,10 @@ Line linear_reg(Point** points, int size){
     }
 
     // calculate a
-    a = cov(x, y, size) / var(x, size);
+    a = (cov(x, y, size) / var(x, size));
 
     // calculate b
-    float average_x = avg(x, size);
-    float average_y = avg(y, size);
-    b = average_y - (a * average_x);
+    b = (avg(y, size) - (a * avg(x, size)));
 
     // deleting the new objects
     delete[] x;
@@ -109,11 +85,8 @@ Line linear_reg(Point** points, int size){
 
 // returns the deviation between point p and the line equation of the points
 float dev(Point p,Point** points, int size){
-    // save the line from the array of points
-	Line line = linear_reg(points, size);
-
     // return the deviation between point p and the line
-    return dev(p, line);
+    return dev(p, linear_reg(points, size));
 }
 
 // returns the deviation between point p and the line

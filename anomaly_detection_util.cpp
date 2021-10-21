@@ -29,7 +29,7 @@ float var(float* x, int size){
     for (int i = 0; i < size; i++) {
         sum += (x[i] * x[i]);
     }
-    sum = sum / float (size);
+    sum = sum / (float) size;
 
     //calculate the average of the original x array
     float average = avg(x, size);
@@ -44,15 +44,15 @@ float cov(float* x, float* y, int size){
     float average_y = avg(y, size);
 
     // creating new arrays to store the values minus their average
-    auto *x_minus = new float [size];
-    auto *y_minus = new float [size];
+    float *x_minus = new float [size];
+    float *y_minus = new float [size];
 
     for (int i = 0; i < size; i++) {
         x_minus[i] = (x[i] - average_x);
         y_minus[i] = (y[i] - average_y);
     }
 
-    auto *multiplied = new float [size];
+    float *multiplied = new float [size];
 
     for (int i = 0; i < size; i++) {
         multiplied[i] = (x_minus[i] * y_minus[i]);
@@ -60,6 +60,7 @@ float cov(float* x, float* y, int size){
 
     float average = avg(multiplied, size);
 
+    // delete the arrays
     delete[] x_minus;
     delete[] y_minus;
     delete[] multiplied;
@@ -82,8 +83,8 @@ Line linear_reg(Point** points, int size){
     float a, b;
 
     // initial arrays of x and y values, of the points
-    auto *x = new float [size];
-    auto *y = new float [size];
+    float *x = new float [size];
+    float *y = new float [size];
 
     // going through the points array and creating x values array and y values array
     for (int i = 0; i < size; i++) {

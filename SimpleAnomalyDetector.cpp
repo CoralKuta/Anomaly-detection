@@ -54,7 +54,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
             if (p < 0) {
                 p = p * (-1);
             }
-            //if the absolute value of pearson is greater than maxCorallation - save the details
+            //if the absolute value of pearson is greater than maxCorallation , save the details
             if (p > maxCorallation) {
                 maxCorallation = p;
                 matchingColumn = j;

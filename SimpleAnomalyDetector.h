@@ -77,5 +77,4 @@ public:
     virtual void addCorallation(string feature1, string feature2,float *x, float *y, int size, float corallation);
 };
 
-
 #endif /* SIMPLEANOMALYDETECTOR_H_ */

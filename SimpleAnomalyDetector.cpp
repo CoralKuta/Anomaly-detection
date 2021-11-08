@@ -62,7 +62,6 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
                 matchingColumn = j;
             }
         }
-
         // if there is matching columns - add correlation to vector of correlations
         if (matchingColumn != (-1)) {
             for (int k = 0; k < size; k++) {
@@ -86,9 +85,9 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
     vector<vector<float>> lines = ts.getSamples();
     vector<correlatedFeatures> normalData = this->getNormalModel();
     // scan every init vector
-    for (int row = 0; row < lines.size(); row++) {
+    for (int row = 0; row < lines.size(); row ++) {
         // scan every correlated features
-        for (int j = 0; j < normalData.size() ; j ++) {
+        for (int j = 0; j < normalData.size(); j ++) {
             // save the indexes of the features
             int indexFeature1 = ts.getFeatureCol(normalData[j].feature1);
             int indexFeature2 = ts.getFeatureCol(normalData[j].feature2);
@@ -98,9 +97,9 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
             float deviation = dev(checkPoint, normalData[j].lin_reg);
             // if the deviation is greater than the threshold - there is a deviation! report
             if (deviation > normalData[j].threshold) {
-                //create object of AnomalyReport and push into the vector of reports.
-                string description = "deviation in " + normalData[j].feature1 + " and " + normalData[j].feature2;
-                long timeStep = row;
+                //create object of AnomalyReport and push into the vector of reports
+                string description = normalData[j].feature1 + "-" + normalData[j].feature2;
+                long timeStep = row + 1;
                 AnomalyReport newReport = AnomalyReport(description, timeStep);
                 reports.push_back(newReport);
             }
@@ -137,8 +136,8 @@ void SimpleAnomalyDetector::addCorrelation(string feature1, string feature2, flo
             maxDev = deviation;
         }
     }
+    // free allocations
     for (int i = 0; i < size; i ++) {
-        // free allocations
         delete points[i];
     }
     // if the correlation greater than the threshold, we add the correlation to the vector of correlations.

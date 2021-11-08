@@ -1,3 +1,9 @@
+/*
+ * anomaly_detection_util.cpp
+ *
+ * Author: Noa Eitan 316222777, Coral Kuta 208649186
+ */
+
 #ifndef TIMESERIES_H_
 #define TIMESERIES_H_
 
@@ -27,10 +33,10 @@ class TimeSeries {
 
 public:
     TimeSeries(const char *CSVfileName);
-    virtual const vector<vector<float>> getFeatures();
-    const vector<vector<float>> getSamples();
-    const string getFeatureName(int index);
-    int getFeatureCol(const string& featureName);
+    const vector<vector<float>> getFeatures() const;
+    const vector<vector<float>> getSamples() const;
+    const string getFeatureName(int index) const;
+    int getFeatureCol(const string& featureName) const;
     vector<vector<float>> extractDataFeatures(const char *CSVfileName);
     vector<vector<float>> extractDataSamples(const char *CSVfileName);
     vector<string> extractFeatureNames(const char *CSVfileName);

@@ -1,3 +1,9 @@
+/*
+ * anomaly_detection_util.cpp
+ *
+ * Author: Noa Eitan 316222777, Coral Kuta 208649186
+ */
+
 #include "timeseries.h"
 
 //constructor
@@ -13,7 +19,7 @@ TimeSeries::TimeSeries(const char *CSVfileName) {
 *
 * @return a vector of vectors. each mini vector has the values of one column (one feature).
 */
-const vector<vector<float>> TimeSeries::getFeatures() {
+const vector<vector<float>> TimeSeries::getFeatures() const {
     return _tableByColumns;
 }
 
@@ -21,7 +27,7 @@ const vector<vector<float>> TimeSeries::getFeatures() {
 *
 * @return the table - a vector of vectors. Each mini vector is one line of the table (one sample).
 */
-const vector<vector<float>> TimeSeries::getSamples() {
+const vector<vector<float>> TimeSeries::getSamples() const {
     return _tableByLines;
 }
 
@@ -31,8 +37,8 @@ const vector<vector<float>> TimeSeries::getSamples() {
  * @param index the index of the feature's name desired
  * @return the name of the feature. Error if there is no such index.
  */
-const string TimeSeries::getFeatureName(int index) {
-    if (index >= _featureNames.size()) {
+const string TimeSeries::getFeatureName(int index) const {
+    if ((index >= _featureNames.size()) || (_featureNames.empty())){
         return "Error !";
     }
     return _featureNames[index];
@@ -44,7 +50,7 @@ const string TimeSeries::getFeatureName(int index) {
  * @param featureName
  * @return index i if the feature exists, -1 if it doesn't.
  */
-int TimeSeries::getFeatureCol(const string& featureName) {
+int TimeSeries::getFeatureCol(const string& featureName) const {
     for (int i = 0; i < _featureNames.size(); i++) {
         if (featureName == _featureNames[i]) {
             return i;

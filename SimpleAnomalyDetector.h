@@ -1,3 +1,8 @@
+/*
+ * anomaly_detection_util.cpp
+ *
+ * Author: Noa Eitan 316222777, Coral Kuta 208649186
+ */
 
 
 #ifndef SIMPLEANOMALYDETECTOR_H_
@@ -14,13 +19,13 @@
 #include <iterator>
 const float THRESHOLD = 0.9;
 
+
 struct correlatedFeatures{
     // names of the correlated features
 	string feature1,feature2;
 	float corrlation;
 	Line lin_reg;
 	float threshold;
-    float maxDev;
 };
 
 
@@ -65,16 +70,16 @@ public:
 	}
 
     /**
-    * function: addCorallation.
-    * @param feature1 the name of the first feature in the corallation
-    * @param feature2 the name of the second feature in the corallation
+    * function: addCorrelation.
+    * @param feature1 the name of the first feature in the correlation
+    * @param feature2 the name of the second feature in the correlation
     * @param x the data in feature1
     * @param y the data in feature2
     * @param size size of x,y
-    * @param corallation the corallation between the features
-    * The function add corallation into the cf vector of correlations.
+    * @param correlation the correlation between the features
+    * The function add correlation into the cf vector of correlations.
     */
-    virtual void addCorallation(string feature1, string feature2,float *x, float *y, int size, float corallation);
+    virtual void addCorrelation(string feature1, string feature2, float *x, float *y, int size, float correlation);
 };
 
 #endif /* SIMPLEANOMALYDETECTOR_H_ */

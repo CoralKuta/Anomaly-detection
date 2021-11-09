@@ -1,3 +1,0 @@
-/home/coral/CLionProjects/anomaly_detection_util/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/coral/CLionProjects/anomaly_detection_util/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/coral/CLionProjects/anomaly_detection_util/cmake-build-debug/CMakeFiles/anomaly_detection_util.dir

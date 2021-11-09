@@ -1,8 +1,4 @@
-/*
- * anomaly_detection_util.h
- *
- * Author: Noa Eitan 316222777, Coral Kuta 208649186
- */
+
 #ifndef ANOMALYDETECTORUTIL_H_
 #define ANOMALYDETECTORUTIL_H_
 

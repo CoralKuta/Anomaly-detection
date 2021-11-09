@@ -1,5 +1,5 @@
 /*
- * SimpleAnomalyDetector.cpp
+ * anomaly_detection_util.cpp
  *
  * Author: Noa Eitan 316222777, Coral Kuta 208649186
  */

@@ -7,7 +7,6 @@
 #include <cmath>
 #include "anomaly_detection_util.h"
 
-
 // return the average of the values that in the array
 float avg(float* x, int size){
     float sum = 0;

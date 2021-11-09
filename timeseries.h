@@ -42,4 +42,5 @@ public:
     vector<string> extractFeatureNames(const char *CSVfileName);
     float* getFeatureColArr(int index);
 };
+
 #endif /* TIMESERIES_H_ */

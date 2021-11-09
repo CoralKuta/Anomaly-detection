@@ -4,7 +4,6 @@
  * Author: Noa Eitan 316222777, Coral Kuta 208649186
  */
 
-
 #ifndef SIMPLEANOMALYDETECTOR_H_
 #define SIMPLEANOMALYDETECTOR_H_
 

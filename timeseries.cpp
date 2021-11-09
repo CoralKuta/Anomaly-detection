@@ -31,7 +31,6 @@ const vector<vector<float>> TimeSeries::getSamples() const {
     return _tableByLines;
 }
 
-
 /**
  * Given an index, the function returns the name of the right feature.
  * @param index the index of the feature's name desired

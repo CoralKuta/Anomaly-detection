@@ -6,8 +6,6 @@
 
 #include "SimpleAnomalyDetector.h"
 
-#include <utility>
-
 const float MULTIPLY_DEV = 1.1;
 
 /**
@@ -35,7 +33,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
     // scan every init vector (feature)
     for (int i = 0; i < features.size() ; i ++) {
         // initial
-        float maxCorrelation = 0;
+        float maxCorrelation = 0.5;
         int matchingColumn = -1;
         int j = i + 1;
         int size = (int) features[i].size();
@@ -67,8 +65,15 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
             for (int k = 0; k < size; k++) {
                 feature2[k] = features[matchingColumn][k];
             }
-            addCorrelation(ts.getFeatureName(i), ts.getFeatureName(matchingColumn),
-                           feature1, feature2, size, maxCorrelation);
+
+            if (maxCorrelation >= THRESHOLD) {
+                addCorByReg(ts.getFeatureName(i), ts.getFeatureName(matchingColumn),
+                            feature1, feature2, size, maxCorrelation);
+            } else {
+                addCorByMec(ts.getFeatureName(i), ts.getFeatureName(matchingColumn),
+                            feature1, feature2, size, maxCorrelation);
+            }
+
         }
     }
 }
@@ -94,9 +99,21 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
             // initial point with the data from the two features, in this row
             Point checkPoint = Point(lines[row][indexFeature1], lines[row][indexFeature2]);
             // calculate the deviation between the point and the linear regression of the correlation features
-            float deviation = dev(checkPoint, normalData[j].lin_reg);
-            // if the deviation is greater than the threshold - there is a deviation! report
-            if (deviation > normalData[j].threshold) {
+
+            bool toReport = false;
+            if (normalData[j].isByReg) {
+                float deviation = dev(checkPoint, normalData[j].lin_reg);
+                // if the deviation is greater than the threshold - there is a deviation! report
+                if (deviation > normalData[j].threshold) {
+                    toReport = true;
+                }
+            } else {
+                if (!is_inside(normalData[j].mec, checkPoint)) {
+                    toReport = true;
+                }
+            }
+
+            if (toReport) {
                 //create object of AnomalyReport and push into the vector of reports
                 string description = normalData[j].feature1 + "-" + normalData[j].feature2;
                 long timeStep = row + 1;
@@ -109,7 +126,7 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
 }
 
 /**
-* function: addCorrelation.
+* function: addCorByReg.
 * @param feature1 the name of the first feature in the correlation
 * @param feature2 the name of the second feature in the correlation
 * @param x the data in feature1
@@ -118,38 +135,40 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
 * @param correlation the correlation between the features
 * The function add correlation into the cf vector of correlations.
 */
-void SimpleAnomalyDetector::addCorrelation(string feature1, string feature2, float *x, float *y, int size,
-                                           float correlation) {
+void SimpleAnomalyDetector::addCorByReg(string feature1, string feature2, float *x, float *y, int size,
+                                        float correlation) {
     // create new array of points.
-    Point* points[size];
+    Point *points[size];
     float maxDev = 0;
     //create array of points, with the values of x, y
-    for (int i = 0; i < size; i ++) {
+    for (int i = 0; i < size; i++) {
         points[i] = new Point(x[i], y[i]);
     }
+
     // calculate the linear regression of these features, by points of the features (feature1, feature2)
     Line linearReg = linear_reg(points, size);
     // scan the points and calculate the deviation of each point, and save the maximum deviation
-    for (int i = 0; i < size; i ++ ) {
+    for (int i = 0; i < size; i++) {
         float deviation = dev(Point(x[i], y[i]), linearReg);
         if (deviation > maxDev) {
             maxDev = deviation;
         }
     }
     // free allocations
-    for (int i = 0; i < size; i ++) {
+    for (int i = 0; i < size; i++) {
         delete points[i];
     }
-    // if the correlation greater than the threshold, we add the correlation to the vector of correlations.
-    if (correlation >= THRESHOLD) {
-        // create new object of correlatedFeatures
-        correlatedFeatures newCorrelation;
-        newCorrelation.feature1 = feature1;
-        newCorrelation.feature2 = feature2;
-        newCorrelation.corrlation = correlation;
-        newCorrelation.lin_reg = linearReg;
-        newCorrelation.threshold = maxDev * MULTIPLY_DEV;
-        //insert into cf (vector of correlatedFeatures) the new correlation
-        cf.push_back(newCorrelation);
-    }
+
+    // create new object of correlatedFeatures
+    correlatedFeatures newCorrelation;
+    newCorrelation.feature1 = feature1;
+    newCorrelation.feature2 = feature2;
+    newCorrelation.corrlation = correlation;
+    newCorrelation.lin_reg = linearReg;
+    newCorrelation.threshold = maxDev * MULTIPLY_DEV;
+    newCorrelation.mec = Circle(Point(0, 0), 0);
+    newCorrelation.isByReg = true;
+    //insert into cf (vector of correlatedFeatures) the new correlation
+    cf.push_back(newCorrelation);
 }
+

@@ -9,6 +9,7 @@
 
 #include "anomaly_detection_util.h"
 #include "AnomalyDetector.h"
+#include "minCircle.h"
 #include <vector>
 #include <algorithm>
 #include <string.h>
@@ -20,17 +21,20 @@ const float THRESHOLD = 0.9;
 
 
 struct correlatedFeatures{
-    // names of the correlated features
+
+// names of the correlated features
 	string feature1,feature2;
 	float corrlation;
 	Line lin_reg;
 	float threshold;
+    Circle mec = Circle(Point(0, 0), 0);
+    bool isByReg;
 };
 
 
 class SimpleAnomalyDetector:public TimeSeriesAnomalyDetector{
-	vector<correlatedFeatures> cf;
 public:
+    vector<correlatedFeatures> cf;
 
     /**
      * function: SimpleAnomalyDetector
@@ -69,7 +73,7 @@ public:
 	}
 
     /**
-    * function: addCorrelation.
+    * function: addCorByReg.
     * @param feature1 the name of the first feature in the correlation
     * @param feature2 the name of the second feature in the correlation
     * @param x the data in feature1
@@ -78,7 +82,11 @@ public:
     * @param correlation the correlation between the features
     * The function add correlation into the cf vector of correlations.
     */
-    virtual void addCorrelation(string feature1, string feature2, float *x, float *y, int size, float correlation);
+    virtual void addCorByReg(string feature1, string feature2, float *x, float *y, int size, float correlation);
+
+    virtual void addCorByMec(string feature1, string feature2, float *x, float *y, int size, float correlation)=0;
 };
+
+
 
 #endif /* SIMPLEANOMALYDETECTOR_H_ */

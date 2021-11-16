@@ -27,6 +27,7 @@ public:
 };
 // ---------------------+-----------------
 
+
 Circle findMinCircle(Point** points,size_t size);
 bool is_inside(const Circle& c, const Point& p);
 Point get_circle_center(float bx, float by, float cx, float cy);
@@ -36,7 +37,5 @@ bool is_valid_circle(const Circle& c, const vector<Point>& P);
 Circle min_circle_trivial(vector<Point>& P);
 Circle welzl(vector<Point>& to_process, vector<Point> boundary, int size);
 float distance(Point a, Point b);
-
-// you can add here additional methods
 
 #endif /* MINCIRCLE_H_ */

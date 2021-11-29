@@ -73,7 +73,6 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
                 addCorByMec(ts.getFeatureName(i), ts.getFeatureName(matchingColumn),
                             feature1, feature2, size, maxCorrelation);
             }
-
         }
     }
 }
@@ -108,11 +107,12 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
                     toReport = true;
                 }
             } else {
-                if (!is_inside(normalData[j].mec, checkPoint)) {
+                Point center = normalData[j].mec.center;
+                Circle tmpCircle = Circle(center, normalData[j].threshold);
+                if (!is_inside(tmpCircle, checkPoint)) {
                     toReport = true;
                 }
             }
-
             if (toReport) {
                 //create object of AnomalyReport and push into the vector of reports
                 string description = normalData[j].feature1 + "-" + normalData[j].feature2;
@@ -154,10 +154,6 @@ void SimpleAnomalyDetector::addCorByReg(string feature1, string feature2, float 
             maxDev = deviation;
         }
     }
-    // free allocations
-    for (int i = 0; i < size; i++) {
-        delete points[i];
-    }
 
     // create new object of correlatedFeatures
     correlatedFeatures newCorrelation;
@@ -170,5 +166,10 @@ void SimpleAnomalyDetector::addCorByReg(string feature1, string feature2, float 
     newCorrelation.isByReg = true;
     //insert into cf (vector of correlatedFeatures) the new correlation
     cf.push_back(newCorrelation);
+
+    // free allocations
+    for (int i = 0; i < size; i++) {
+        delete points[i];
+    }
 }
 

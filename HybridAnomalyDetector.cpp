@@ -39,20 +39,19 @@ void HybridAnomalyDetector::addCorByMec(string feature1, string feature2, float 
     // finding the minimum enclosing circle of the given points.
     Circle mec = findMinCircle(points, size);
 
-    // free allocations
-    for (int i = 0; i < size; i++) {
-        delete points[i];
-    }
-
     // create new object of correlatedFeatures
     correlatedFeatures newCorrelation;
     newCorrelation.feature1 = feature1;
     newCorrelation.feature2 = feature2;
     newCorrelation.corrlation = correlation;
     newCorrelation.lin_reg = Line(0, 0);
-    newCorrelation.threshold = mec.radius * MULTIPLY_RADIUS;
+    newCorrelation.threshold = (mec.radius) * MULTIPLY_RADIUS;
     newCorrelation.mec = mec;
     newCorrelation.isByReg = false;
     //insert into cf (vector of correlatedFeatures) the new correlation
     cf.push_back(newCorrelation);
+    // free allocations
+    for (int i = 0; i < size; i++) {
+        delete points[i];
+    }
 }

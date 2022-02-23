@@ -41,6 +41,7 @@ public:
     vector<vector<float>> extractDataSamples(const char *CSVfileName);
     vector<string> extractFeatureNames(const char *CSVfileName);
     float* getFeatureColArr(int index);
+    int getSamplesNum();
 };
 
 #endif /* TIMESERIES_H_ */

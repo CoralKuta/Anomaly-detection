@@ -44,6 +44,10 @@ const string TimeSeries::getFeatureName(int index) const {
 }
 
 
+int TimeSeries::getSamplesNum() {
+    return _samplesNum;
+}
+
 /**
  * Given the name of the feature, the function returns the index of feature column.
  * @param featureName
@@ -57,18 +61,6 @@ int TimeSeries::getFeatureCol(const string& featureName) const {
     }
     return -1;
 }
-
-// TODO !
-//    /**
-//     *
-//     * @param feature
-//     * @param time
-//     * @return
-//     */
-//    float valueOfFeatureOnAGivenTime(string feature, float time) {
-//    // ???????????????????????
-//    }
-
 
 /**
  * Given a csv file, we extract the file's data by columns (features), and store the data in a data base.
@@ -152,8 +144,6 @@ vector<vector<float>> TimeSeries::extractDataSamples(const char *CSVfileName) {
     return tableByLines;
 }
 
-
-// TODO NOTES
 /**
  * Given a csv file, we extract the first line - the feature's names.
  * @param CSVfileName
@@ -194,5 +184,7 @@ vector<string> TimeSeries::extractFeatureNames(const char *CSVfileName) {
     }
     return features;
 }
+
+
 
 

@@ -12,7 +12,8 @@ const float MULTIPLY_DEV = 1.1;
  * function: SimpleAnomalyDetector
  * constructor.
  */
-SimpleAnomalyDetector::SimpleAnomalyDetector() {
+SimpleAnomalyDetector::SimpleAnomalyDetector(float threshold): TimeSeriesAnomalyDetector() {
+    this->threshold = threshold;
 }
 
 /**
@@ -27,7 +28,7 @@ SimpleAnomalyDetector::~SimpleAnomalyDetector() {
  * @param ts a TimeSeries object.
  * The function learn a normal data from ts and add correlation features to cf member.
  */
-void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
+void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
     // get vector of vectors, of floats, each init vector is feature
     const vector<vector<float>>features = ts.getFeatures();
     // scan every init vector (feature)
@@ -66,10 +67,10 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
                 feature2[k] = features[matchingColumn][k];
             }
 
-            if (maxCorrelation >= THRESHOLD) {
+            if (maxCorrelation >= threshold) {
                 addCorByReg(ts.getFeatureName(i), ts.getFeatureName(matchingColumn),
                             feature1, feature2, size, maxCorrelation);
-            } else {
+            } else if ((maxCorrelation > 0.5) && (maxCorrelation < threshold)){
                 addCorByMec(ts.getFeatureName(i), ts.getFeatureName(matchingColumn),
                             feature1, feature2, size, maxCorrelation);
             }
@@ -88,10 +89,10 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
     // save the data from ts in lines, by samples
     vector<vector<float>> lines = ts.getSamples();
     vector<correlatedFeatures> normalData = this->getNormalModel();
-    // scan every init vector
-    for (int row = 0; row < lines.size(); row ++) {
-        // scan every correlated features
-        for (int j = 0; j < normalData.size(); j ++) {
+    // scan every correlated features
+    for (int j = 0; j < normalData.size(); j ++) {
+        // scan every init vector
+        for (int row = 0; row < lines.size(); row ++) {
             // save the indexes of the features
             int indexFeature1 = ts.getFeatureCol(normalData[j].feature1);
             int indexFeature2 = ts.getFeatureCol(normalData[j].feature2);
@@ -171,5 +172,53 @@ void SimpleAnomalyDetector::addCorByReg(string feature1, string feature2, float 
     for (int i = 0; i < size; i++) {
         delete points[i];
     }
+}
+
+vector<pair<long, long>> SimpleAnomalyDetector::anomaliesByTimeStep(vector<AnomalyReport> reports) {
+    vector<pair<long, long>> anomaliesByTimeStep;
+
+    // check the vector of reports is not empty
+    if (reports.empty()) {
+        return anomaliesByTimeStep;
+    }
+
+    // initialize current description to be the first one
+    string currentDescription = reports[0].description;
+    pair<long, long> currentPair;
+    // initialize the current pair to be the first time step
+    currentPair.first = reports[0].timeStep;
+    currentPair.second = reports[0].timeStep;
+
+    for(int i = 1; i < reports.size(); i++) {
+        // existing description. we need to check if it's a continuation of an old time step, or a new one
+        if (currentDescription == reports[i].description) {
+            // if we have a continues end time, it's the same anomaly, the same period of time
+            if (currentPair.second + 1 == reports[i].timeStep) {
+                // update the end time
+                currentPair.second = reports[i].timeStep;
+
+            // it's new period of time
+            } else {
+                // we add the current pair which we are done with
+                anomaliesByTimeStep.push_back(currentPair);
+                // initialize the pair to have the information of the new time step
+                currentPair.first = reports[i].timeStep;
+                currentPair.second = reports[i].timeStep;
+            }
+
+        // new description
+        } else {
+            // we add the current pair which we are done with
+            anomaliesByTimeStep.push_back(currentPair);
+            // updating the current description to be the new one
+            currentDescription = reports[i].description;
+            // initialize the pair to have the information of the new time step
+            currentPair.first = reports[i].timeStep;
+            currentPair.second = reports[i].timeStep;
+        }
+    }
+    // add the final pair
+    anomaliesByTimeStep.push_back(currentPair);
+    return anomaliesByTimeStep;
 }
 

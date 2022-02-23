@@ -12,10 +12,9 @@
 
 class HybridAnomalyDetector:public SimpleAnomalyDetector {
 public:
-	HybridAnomalyDetector();
-	virtual ~HybridAnomalyDetector();
-    virtual void addCorByMec(string feature1, string feature2, float *x, float *y, int size, float correlation);
-
+	HybridAnomalyDetector(float threshold);
+    virtual ~HybridAnomalyDetector();
+    virtual void addCorByMec(string feature1, string feature2, float *x, float *y, int size, float correlation) override;
 };
 
 #endif /* HYBRIDANOMALYDETECTOR_H_ */

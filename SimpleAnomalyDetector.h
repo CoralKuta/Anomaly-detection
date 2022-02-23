@@ -17,7 +17,6 @@
 #include <map>
 #include <list>
 #include <iterator>
-const float THRESHOLD = 0.9;
 
 
 struct correlatedFeatures{
@@ -35,32 +34,33 @@ struct correlatedFeatures{
 class SimpleAnomalyDetector:public TimeSeriesAnomalyDetector{
 public:
     vector<correlatedFeatures> cf;
+    float threshold;
 
     /**
      * function: SimpleAnomalyDetector
      * constructor.
      */
-	SimpleAnomalyDetector();
+	SimpleAnomalyDetector(float threshold);
 
     /**
     * function: ~SimpleAnomalyDetector
     * destructor.
     */
-	virtual ~SimpleAnomalyDetector();
+    virtual ~SimpleAnomalyDetector();
 
     /**
      * function: learnNormal.
      * @param ts a TimeSeries object.
      * The function learn a normal data from ts and add corallation features to cf member.
      */
-	virtual void learnNormal(const TimeSeries& ts);
+	virtual void learnNormal(const TimeSeries& ts) override;
 
     /**
      * function: detect.
      * @param ts a TimeSeries object.
      * The function scan data from ts and add report deviations, by the correlations from learnNormal.
      */
-	virtual vector<AnomalyReport> detect(const TimeSeries& ts);
+	virtual vector<AnomalyReport> detect(const TimeSeries& ts) override;
 
     /**
      * function: getNormalModel
@@ -85,6 +85,8 @@ public:
     virtual void addCorByReg(string feature1, string feature2, float *x, float *y, int size, float correlation);
 
     virtual void addCorByMec(string feature1, string feature2, float *x, float *y, int size, float correlation)=0;
+
+    virtual vector<pair<long, long>> anomaliesByTimeStep(vector<AnomalyReport> reports);
 };
 
 

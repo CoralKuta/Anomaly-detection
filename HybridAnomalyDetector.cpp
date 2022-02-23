@@ -7,15 +7,12 @@
 #include "HybridAnomalyDetector.h"
 float MULTIPLY_RADIUS = 1.1;
 
-HybridAnomalyDetector::HybridAnomalyDetector() {
-	// TODO Auto-generated constructor stub
-
+HybridAnomalyDetector::HybridAnomalyDetector(float threshold):SimpleAnomalyDetector(threshold) {
 }
 
 HybridAnomalyDetector::~HybridAnomalyDetector() {
-	// TODO Auto-generated destructor stub
-}
 
+}
 
 /**
 * function: addCorByMec.
